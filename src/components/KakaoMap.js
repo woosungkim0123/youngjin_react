@@ -1,7 +1,7 @@
+import React from "react";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react"
 import Course from "./Course";
-
 
 
 const { kakao } = window;
@@ -16,26 +16,20 @@ const USER = "USER";
 let map;
 let userMarker;
 
-const addMarker = (course) => {
-  let imgUrl = "/file/map_not_done.png";
-  let imgSize = new kakao.maps.Size(24, 35);
-
-  if (course.visited === "Y") {
-    imgUrl = "/file/map_complete.jpg";
-    imgSize = new kakao.maps.Size(20, 30);
-  }
-  new kakao.maps.Marker({
-    map: map,
-    title: course.name,
-    position: new kakao.maps.LatLng(course.latitude, course.longitude),
-    image: new kakao.maps.MarkerImage(imgUrl, imgSize),
-  });
-};
+const mapSetting = (pos) => {
+  const locationMap = document.getElementById("map");
+  const options = {
+    center: new kakao.maps.LatLng(pos.latitude, pos.longitude),
+    level: 2,
+  };
+  map = new kakao.maps.Map(locationMap, options);
+  map.setZoomable(false);
+}
 export const moveMap = ({ latitude, longitude}, mp) => {
-  const moveLatLon = new kakao.maps.LatLng(latitude, longitude);
-  console.log('실행')
-  mp.panTo(moveLatLon);
-  
+  if(mp) {
+    const moveLatLon = new kakao.maps.LatLng(latitude, longitude);
+    mp.panTo(moveLatLon);
+  }
 };
 const addUserMarker = (pos) => {
   if(userMarker) userMarker.setMap(null);
@@ -70,61 +64,74 @@ let data = [
     longitude: 128.68104555230227,
     visited: "N",
   },
-  { name: "나의위치", code: USER, latitude: 0, longitude: 0 }
 ];
 
 
-export default function KakaoMap() {
-  const [userLocation, setUserLocation] = useState({latitude : 0, longitude: 0})
-  const [clickType, setClickType] = useState(USER)
-  const [clickCourse, setClickCourse] = useState({ code : USER});
-  const [courses, setCourses] = useState(data);
-  console.log(clickCourse)
-  
-  const mapSetting = (pos) => {
-    const locationMap = document.getElementById("map");
-    const options = {
-      center: new kakao.maps.LatLng(pos.latitude, pos.longitude),
-      level: 2,
-    };
-    map = new kakao.maps.Map(locationMap, options);
-    map.setZoomable(false);
-    courses.forEach((course) => { addMarker(course) });
+let course;
+
+
+const addMarker = (c) => {
+  let imgUrl = "/image/map_not_done.png";
+  let imgSize = new kakao.maps.Size(24, 35);
+
+  if (c.visited === "Y") {
+    imgUrl = "/image/map_complete.jpg";
+    imgSize = new kakao.maps.Size(20, 30);
   }
+  new kakao.maps.Marker({
+    map: map,
+    title: c.name,
+    position: new kakao.maps.LatLng(c.latitude, c.longitude),
+    image: new kakao.maps.MarkerImage(imgUrl, imgSize),
+  });
+};
+
+
+
+
+
+export default function KakaoMap() {
+  const [myLocation, setMyLocation] = useState({ name: "나의위치", code:"USER", latitude : 0, longitude: 0 })
+  const [clickType, setClickType] = useState(USER)
+
   useEffect(() => {
+    console.log('처음 딱 한번 실행')
+    course = data;
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((pos) => {
         const latitude = pos.coords.latitude;
         const longitude = pos.coords.longitude;
         mapSetting({ latitude, longitude });
+        course.forEach((c) => { addMarker(c) });
       });
-      
       navigator.geolocation.watchPosition((pos) => {
-        const cPosition = { latitude : pos.coords.latitude, longitude: pos.coords.longitude }
-        setUserLocation(pos);
-        let copyCourses = [...courses];
-        const changeCourse = copyCourses.map((c) => (
-          c.code === USER ? {...c, latitude: pos.coords.latitude, longitude: pos.coords.longitude } : c
-        ))
-        setCourses(changeCourse)
-
-        addUserMarker(cPosition);
-        if(clickType === USER) moveMap(cPosition, map);
+        const m = { name: "나의위치", code: "USER", latitude : pos.coords.latitude, longitude: pos.coords.longitude }
+        setMyLocation(m);
       });
     }
   }, [])
-  
+
+  useEffect(() => {
+    console.log("바뀔떄마다 실행")
+    addUserMarker(myLocation);
+    if(clickType === USER) moveMap(myLocation, map)
+  }, [myLocation, clickType])
+
   return (
     <>
       <CourseWrap>
       {
-        courses.map((course) => (
-          <Course key={course.code} course={course} clickCourse={clickCourse} setClickCourse={setClickCourse} setClickType={setClickType} map={map} />
-        ))
+        course 
+        ? (
+          course.map((course) => (
+            <Course key={course.code} course={course} clickType={clickType} setClickType={setClickType} map={map} />
+          ))
+          )
+        : null
       }
+      <Course course={myLocation} clickType={clickType} setClickType={setClickType} map={map} />
       </CourseWrap>
       <Map id="map"></Map>
-
     </>
   )
 }

@@ -20,17 +20,15 @@ function CourseDetail({ course }) {
   )
 }
 
-export default function Course({ course, clickCourse, setClickCourse, setClickType, map }) {
+export default function Course({ course, clickType, setClickType, map }) {
   const abc = (data) => {
-    setClickCourse(data)
     setClickType(data.code)
     moveMap({latitude: data.latitude, longitude: data.longitude }, map) 
   }
-
   return (
     <>
       {
-        clickCourse.code === course.code 
+        clickType === course.code 
         ? <CourseClickNav><CourseDetail course={course} /></CourseClickNav>
         : <CourseNav onClick={() => {abc(course)}}><CourseDetail course={course} /></CourseNav>
       }
