@@ -35,36 +35,6 @@ const addUserMarker = (pos) => {
   if(userMarker) userMarker.setMap(null);
   userMarker = new kakao.maps.Marker({ map: map, position: new kakao.maps.LatLng(pos.latitude, pos.longitude), });
 };
-let data = [
-  { 
-    name: "영진",
-    code: "YUNGJIN",
-    latitude: 35.87555082502176,
-    longitude: 128.6816374505427,
-    visited: "N",
-  },
-  {
-    name: "국밥",
-    code: "GUKBOB",
-    latitude: 35.87583123506328,
-    longitude: 128.6817532073904,
-    visited: "N",
-  },
-  {
-    name: "흑돼지",
-    code: "JEJUPIG",
-    latitude: 35.87664030121222,
-    longitude: 128.68155341448463,
-    visited: "N",
-  },
-  {
-    name: "지하철",
-    code: "SUBWAY2",
-    latitude: 35.87623769570281,
-    longitude: 128.68104555230227,
-    visited: "N",
-  },
-];
 
 
 let course;
@@ -88,27 +58,43 @@ const addMarker = (c) => {
 
 
 
-
-
 export default function KakaoMap() {
   const [myLocation, setMyLocation] = useState({ name: "나의위치", code:"USER", latitude : 0, longitude: 0 })
   const [clickType, setClickType] = useState(USER)
 
   useEffect(() => {
     console.log('처음 딱 한번 실행')
-    course = data;
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((pos) => {
-        const latitude = pos.coords.latitude;
-        const longitude = pos.coords.longitude;
-        mapSetting({ latitude, longitude });
-        course.forEach((c) => { addMarker(c) });
-      });
-      navigator.geolocation.watchPosition((pos) => {
-        const m = { name: "나의위치", code: "USER", latitude : pos.coords.latitude, longitude: pos.coords.longitude }
-        setMyLocation(m);
-      });
+    async function a() {
+      const data = await (await fetch("https://port-0-yungjin-qr-3vw25lcbtoi2i.gksl2.cloudtype.app/course", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        }
+      })).json();
+      if(data) {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition((pos) => {
+            const latitude = pos.coords.latitude;
+            const longitude = pos.coords.longitude;
+            mapSetting({ latitude, longitude });
+            course.forEach((c) => { addMarker(c) });
+          });
+          navigator.geolocation.watchPosition((pos) => {
+            const m = { name: "나의위치", code: "USER", latitude : pos.coords.latitude, longitude: pos.coords.longitude }
+            setMyLocation(m);
+          });
+        }
+        course = data;
+      } else {
+        alert("서버에러")
+      }
+      
     }
+    a();
+    
+    
+    
   }, [])
 
   useEffect(() => {
