@@ -64,7 +64,7 @@ export default function KakaoMap() {
 
   useEffect(() => {
     console.log('처음 딱 한번 실행')
-    async function a() {
+    async function getCourseData() {
       const data = await (await fetch("https://port-0-yungjin-qr-3vw25lcbtoi2i.gksl2.cloudtype.app/course", {
         method: "POST",
         headers: {
@@ -73,6 +73,7 @@ export default function KakaoMap() {
         }
       })).json();
       if(data) {
+        course = data;
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition((pos) => {
             const latitude = pos.coords.latitude;
@@ -85,13 +86,13 @@ export default function KakaoMap() {
             setMyLocation(m);
           });
         }
-        course = data;
+       
       } else {
         alert("서버에러")
       }
       
     }
-    a();
+    getCourseData();
     
     
     
