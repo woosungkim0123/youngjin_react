@@ -63,17 +63,17 @@ export default function KakaoMap() {
   const [clickType, setClickType] = useState(USER)
 
   useEffect(() => {
-    console.log('처음 딱 한번 실행')
+    const url = "https://port-0-yungjin-qr-3vw25lcbtoi2i.gksl2.cloudtype.app/course"
     async function getCourseData() {
-      const data = await (await fetch("https://port-0-yungjin-qr-3vw25lcbtoi2i.gksl2.cloudtype.app/course", {
+      const data = await (await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json"
         }
       })).json();
-      if(data) {
-        course = data;
+      if(data.code === "OK") {
+        course = data.course;
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition((pos) => {
             const latitude = pos.coords.latitude;
@@ -97,9 +97,8 @@ export default function KakaoMap() {
     
     
   }, [])
-
   useEffect(() => {
-    console.log("바뀔떄마다 실행")
+
     addUserMarker(myLocation);
     if(clickType === USER) moveMap(myLocation, map)
   }, [myLocation, clickType])
