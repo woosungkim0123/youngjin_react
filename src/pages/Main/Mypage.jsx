@@ -9,6 +9,7 @@ const LogoutBtn = styled.div`width:250px; height: 70px; display: flex; align-ite
 
 export default function Mypage() {
   const { user, logout } = useAuth();
+  console.log(user)
   const logoutCheck = () => {
     // 로그아웃 할건지 물어보고
     logout();

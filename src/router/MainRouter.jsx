@@ -6,8 +6,6 @@ import Qr from "../pages/Main/Qr";
 import Used from "../pages/Main/Used";
 
 
-
-
 export default function MainRouter() {
   return(
     <BrowserRouter>

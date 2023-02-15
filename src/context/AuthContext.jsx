@@ -11,15 +11,9 @@ import LoginRouter from '../router/LoginRouter';
 // 전역적으로 값을 다룰때 사용
 const AuthContext = createContext({});
 
-export function AuthProvider({ authService, authErrorEventBus, children }) {
+export function AuthProvider({ authService, children }) {
   const [user, setUser] = useState(undefined);
   
-  useEffect(() => {
-    authErrorEventBus.listen((err) => {
-      console.error(err);
-      setUser(undefined);
-    });
-  }, [authErrorEventBus]);
 
   useEffect(() => {
     authService.me()
@@ -74,14 +68,7 @@ export function AuthProvider({ authService, authErrorEventBus, children }) {
   );
 }
 
-export class AuthErrorEventBus {
-  listen(callback) {
-    this.callback = callback;
-  }
-  notify(error) {
-    this.callback(error);
-  }
-}
 
 export default AuthContext;
+
 export const useAuth = () => useContext(AuthContext);
