@@ -50,17 +50,20 @@
           timer: 2000,
         }).fire({ title: `${message}`, icon: "error" });
       }
-      const output = async (qrCode) => {
-        const data = await (await fetch("http://localhost:3001/qr", {
+      const output = async (code) => {
+        const token = localStorage.getItem('token');
+        const data = await (await fetch("http://localhost:3001/api/course/qr", {
           method: "POST",
           headers: {
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
             "Accept": "application/json"
           },
-          body: JSON.stringify({ code: qrCode }),
+          body: JSON.stringify({ code }),
         })).json();
-        if (data.code === "OK") window.location.replace("/course");
-        else toastMessage(data.message)
+        if (data.code === "OK") {
+          window.location.replace("/course");
+        } else toastMessage(data.message)
       }
     </script>
   </body>
