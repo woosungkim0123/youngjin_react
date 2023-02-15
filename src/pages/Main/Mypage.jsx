@@ -16,7 +16,7 @@ export default function Mypage() {
   return (
     <>
       <EmptyContainer>
-        <Introduce><UserName>{user.name}</UserName>님 안녕하세요</Introduce>
+        <Introduce><UserName>{user.u_name}</UserName>님 안녕하세요</Introduce>
         <LogoutBtn onClick={logoutCheck}>로그아웃</LogoutBtn>
       </EmptyContainer>
       <Footer />

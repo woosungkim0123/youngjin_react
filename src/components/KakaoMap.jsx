@@ -50,11 +50,12 @@ const addMarker = (c) => {
   });
 };
 
-let course;
 
 export default function KakaoMap() {
+  
   const [myLocation, setMyLocation] = useState({ name: "나의위치", code:"USER", latitude : 0, longitude: 0 })
   const [clickType, setClickType] = useState(USER)
+  const [course, setCourse] = useState(null);
   useEffect(() => {
     const url = `${process.env.REACT_APP_BASE_URL}/api/course/info`
     async function getCourseData() {
@@ -64,20 +65,7 @@ export default function KakaoMap() {
         headers: { Authorization: `Bearer ${token}` },
       })).json();
       if(data.code === "OK") {
-        course = data.course;
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition((pos) => {
-            const latitude = pos.coords.latitude;
-            const longitude = pos.coords.longitude;
-            mapSetting({ latitude, longitude });
-            course.forEach((c) => { addMarker(c) });
-          });
-          navigator.geolocation.watchPosition((pos) => {
-            const m = { name: "나의위치", code: "USER", latitude : pos.coords.latitude, longitude: pos.coords.longitude }
-            setMyLocation(m);
-          });
-        }
-       
+        setCourse(data.course);
       } else {
         // 에러뛰워야함
       }
@@ -85,7 +73,23 @@ export default function KakaoMap() {
     }
     getCourseData();
   }, [])
-
+  useEffect(() => {
+    if(course) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((pos) => {
+          const latitude = pos.coords.latitude;
+          const longitude = pos.coords.longitude;
+          mapSetting({ latitude, longitude });
+          course.forEach((c) => { addMarker(c) });
+        });
+        navigator.geolocation.watchPosition((pos) => {
+          const m = { name: "나의위치", code: "USER", latitude : pos.coords.latitude, longitude: pos.coords.longitude }
+          setMyLocation(m);
+        });
+      }
+    }
+    
+  },[course])
   useEffect(() => {
     addUserMarker(myLocation);
     if(clickType === USER) moveMap(myLocation, map)
