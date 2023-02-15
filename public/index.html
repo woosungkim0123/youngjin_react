@@ -23,7 +23,7 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>용계역 여행</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ced3ec5b7455b7ef2f55aba57f55b275"></script>
@@ -41,5 +41,27 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+    <script>
+      const toastMessage = (message) => {
+        Swal.mixin({
+          toast: true,
+          position: "bottom",
+          showConfirmButton: false,
+          timer: 2000,
+        }).fire({ title: `${message}`, icon: "error" });
+      }
+      const output = async (qrCode) => {
+        const data = await (await fetch("http://localhost:3001/qr", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({ code: qrCode }),
+        })).json();
+        if (data.code === "OK") window.location.replace("/course");
+        else toastMessage(data.message)
+      }
+    </script>
   </body>
 </html>

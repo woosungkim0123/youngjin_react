@@ -6,10 +6,7 @@ import Course from "./Course";
 
 const { kakao } = window;
 const CourseWrap = styled.ul`display: flex; flex-wrap: wrap; padding: 20px 10px;`
-
 const Map = styled.div`width: 90%; height: 50vh; margin:0 auto;`
-
-
 
 
 const USER = "USER";
@@ -37,9 +34,6 @@ const addUserMarker = (pos) => {
 };
 
 
-let course;
-
-
 const addMarker = (c) => {
   let imgUrl = "/image/map_not_done.png";
   let imgSize = new kakao.maps.Size(24, 35);
@@ -56,21 +50,18 @@ const addMarker = (c) => {
   });
 };
 
-
+let course;
 
 export default function KakaoMap() {
   const [myLocation, setMyLocation] = useState({ name: "나의위치", code:"USER", latitude : 0, longitude: 0 })
   const [clickType, setClickType] = useState(USER)
-
   useEffect(() => {
-    const url = "https://port-0-yungjin-qr-3vw25lcbtoi2i.gksl2.cloudtype.app/course"
+    const url = `${process.env.REACT_APP_BASE_URL}/api/course/info`
     async function getCourseData() {
-      const data = await (await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        }
+      const token = localStorage.getItem("token");
+      const data  = await (await fetch(url, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` },
       })).json();
       if(data.code === "OK") {
         course = data.course;
@@ -88,17 +79,14 @@ export default function KakaoMap() {
         }
        
       } else {
-        alert("서버에러")
+        // 에러뛰워야함
       }
       
     }
     getCourseData();
-    
-    
-    
   }, [])
-  useEffect(() => {
 
+  useEffect(() => {
     addUserMarker(myLocation);
     if(clickType === USER) moveMap(myLocation, map)
   }, [myLocation, clickType])

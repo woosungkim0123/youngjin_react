@@ -12,7 +12,7 @@ function CourseDetail({ course }) {
     <>
       { 
         course.visited === "Y" 
-          ? <MarkerWrap><MarkerImg src="/image/complete" /></MarkerWrap>
+          ? <MarkerWrap><MarkerImg src="/image/complete.png" /></MarkerWrap>
           :  null
       }
       <MarkerTitle>{course.name}</MarkerTitle>
@@ -21,7 +21,7 @@ function CourseDetail({ course }) {
 }
 
 export default function Course({ course, clickType, setClickType, map }) {
-  const abc = (data) => {
+  const clickCourseNav = (data) => {
     setClickType(data.code)
     moveMap({latitude: data.latitude, longitude: data.longitude }, map) 
   }
@@ -30,9 +30,8 @@ export default function Course({ course, clickType, setClickType, map }) {
       {
         clickType === course.code 
         ? <CourseClickNav><CourseDetail course={course} /></CourseClickNav>
-        : <CourseNav onClick={() => {abc(course)}}><CourseDetail course={course} /></CourseNav>
+        : <CourseNav onClick={() => {clickCourseNav(course)}}><CourseDetail course={course} /></CourseNav>
       }
-      
     </>
   )
 }

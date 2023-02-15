@@ -6,9 +6,18 @@ const FooterContainer = styled.footer`position: fixed; bottom:0; left:0; right:0
 const MenuContainer = styled.ul`display: flex; align-items: center; height: 100%;`
 const MenuWrapLink = styled(Link)`width: 20%; display: flex; justify-content: space-evenly; align-items: center; flex-direction: column; height:100%;`
 const MenuWrapLi = styled.li`width: 20%; display: flex; justify-content: space-evenly; align-items: center; flex-direction: column; height:100%; color:red;`
+const AndroidBtn = styled.li`width: 20%; display: flex; justify-content: space-evenly; align-items: center; flex-direction: column; height:100%;`
 
-
+const phoneTypeCheck = () => {
+  if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) return 'ios';
+  else if (/Android/i.test(navigator.userAgent)) return 'android';
+  else return 'pc';
+};
+const androidClick = () => {
+  window.HybridApp.QR_Btn();
+}
 export default function Footer() {
+  
   const menus = [
     {name: "홈", url: "/", icon: "fas fa-home"}, 
     {name: "이용안내", url: "/used", icon: "fas fa-info"}, 
@@ -17,15 +26,18 @@ export default function Footer() {
     {name: "마이페이지", url: "/mypage", icon: "fas fa-user"}
   ]
   const currentPath = window.location.pathname;
+  const phoneType = phoneTypeCheck();
   return (
     <>
       <FooterContainer>
         <MenuContainer>
           {
             menus.map((menu) => (
-              menu.url !== currentPath 
-                ? <MenuWrapLink to={menu.url} key={menu.name}><MenuContent menu={menu} /></MenuWrapLink>
-                : <MenuWrapLi key={menu.name}><MenuContent menu={menu} /></MenuWrapLi>
+              menu.url === "/qr" && phoneType === "android"
+                ? <AndroidBtn key={menu.name} onClick={androidClick}><MenuContent menu={menu} /></AndroidBtn>
+                : menu.url !== currentPath 
+                  ? <MenuWrapLink to={menu.url} key={menu.name}><MenuContent menu={menu} /></MenuWrapLink>
+                  : <MenuWrapLi key={menu.name}><MenuContent menu={menu} /></MenuWrapLi>
             ))
           }
         </MenuContainer>

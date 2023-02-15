@@ -1,12 +1,14 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Course from "./Routes/Course";
-import Home from "./Routes/Home";
-import Mypage from "./Routes/Mypage";
-import Qr from "./Routes/Qr";
-import Used from "./Routes/Used";
+import Course from "../pages/Main/Course";
+import Home from "../pages/Main/Home";
+import Mypage from "../pages/Main/Mypage";
+import Qr from "../pages/Main/Qr";
+import Used from "../pages/Main/Used";
 
 
-export default function Router() {
+
+
+export default function MainRouter() {
   return(
     <BrowserRouter>
       <Routes>

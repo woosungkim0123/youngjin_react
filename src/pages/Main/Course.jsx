@@ -1,7 +1,7 @@
-import Footer from "../components/Footer";
-import KakaoMap from "../components/KakaoMap";
-import TopInfo from "../components/TopInfo";
-import { ContentContainer } from "../global/common";
+import Footer from "../../components/Footer";
+import KakaoMap from "../../components/KakaoMap";
+import TopInfo from "../../components/TopInfo";
+import { ContentContainer } from "../../global/common";
 
 export default function Course() {
   

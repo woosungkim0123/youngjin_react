@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import Footer from "../components/Footer";
-import { EmptyContainer } from "../global/common";
+import Footer from "../../components/Footer";
+import { EmptyContainer } from "../../global/common";
 
 const MainTitle = styled.p`font-family: 'yg-jalnan', 'sans-serif'; font-size: 25px; font-weight: bold;`
 const ImgWrap = styled.div`width: 220px; height: 220px; border-radius: 50%; overflow: hidden; margin-top: 20px;`

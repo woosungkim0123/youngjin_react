@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
-import Footer from "../components/Footer";
-import TopInfo from "../components/TopInfo";
-import { ContentContainer } from "../global/common";
+import Footer from "../../components/Footer";
+import TopInfo from "../../components/TopInfo";
+import { ContentContainer } from "../../global/common";
 
 const TitleWrap = styled.div`color: #a1805f; text-align: center; margin: 0 auto; padding: 30px; font-size: 20px; font-weight:bold; font-family: 'Pretendard-ExtraBold' !important; letter-spacing: 2px;`
 const ContentWrap = styled.div`font-family: "Pretendard-Medium"; padding: 0 40px; font-size: 18px; text-align: center; `
